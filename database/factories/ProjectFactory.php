@@ -18,7 +18,14 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->sentence(3),
+    
+            'description' => fake()->paragraph(),
+    
+            'start_date' => fake()->date(),
+    
+            'deadline' => fake()->dateTimeBetween('+1 week', '+3 months')
+                               ->format('Y-m-d'),
         ];
     }
 }
