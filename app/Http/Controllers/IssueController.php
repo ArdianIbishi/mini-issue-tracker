@@ -55,7 +55,12 @@ class IssueController extends Controller
      */
     public function show(Issue $issue)
     {
-        $issue->load('project');
+        $issue->load([
+            'project',
+            'comments' => function ($query) {
+                $query->latest();
+            }
+        ]);
     
         return view('issues.show', compact('issue'));
     }
