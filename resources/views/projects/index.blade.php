@@ -15,7 +15,11 @@
 
     @forelse($projects as $project)
         <div>
-            <h3>{{ $project->name }}</h3>
+        <h3>
+    <a href="{{ route('projects.show', $project) }}">
+        {{ $project->name }}
+    </a>
+</h3>
             <p>{{ $project->description }}</p>
         </div>
         <hr>
