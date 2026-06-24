@@ -5,6 +5,12 @@
 </head>
 <body>
 
+@if(session('success'))
+    <p>
+        {{ session('success') }}
+    </p>
+@endif
+
     <h1>Projects</h1>
 
     @forelse($projects as $project)
