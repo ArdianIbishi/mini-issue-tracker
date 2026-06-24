@@ -1,31 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Projects</title>
-</head>
-<body>
+@extends('layouts.app')
 
-@if(session('success'))
-    <p>
-        {{ session('success') }}
-    </p>
-@endif
+@section('content')
 
+<div class="d-flex justify-content-between align-items-center mb-3">
     <h1>Projects</h1>
 
-    @forelse($projects as $project)
-        <div>
-        <h3>
-    <a href="{{ route('projects.show', $project) }}">
-        {{ $project->name }}
+    <a href="{{ route('projects.create') }}"
+       class="btn btn-primary">
+        New Project
     </a>
-</h3>
-            <p>{{ $project->description }}</p>
-        </div>
-        <hr>
-    @empty
-        <p>No projects found.</p>
-    @endforelse
+</div>
 
-</body>
-</html>
+<div class="card">
+    <div class="card-body">
+
+        @forelse($projects as $project)
+
+            <h5>
+                <a href="{{ route('projects.show', $project) }}">
+                    {{ $project->name }}
+                </a>
+            </h5>
+
+            <p>{{ $project->description }}</p>
+
+            <hr>
+
+        @empty
+
+            <p>No projects found.</p>
+
+        @endforelse
+
+    </div>
+</div>
+
+@endsection

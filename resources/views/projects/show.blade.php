@@ -1,54 +1,75 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ $project->name }}</title>
-</head>
-<body>
+@extends('layouts.app')
 
-@if(session('success'))
-    <p>{{ session('success') }}</p>
-@endif
+@section('content')
 
-<h1>{{ $project->name }}</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>{{ $project->name }}</h1>
 
-<p>{{ $project->description }}</p>
-
-<a href="{{ route('projects.edit', $project) }}">
-        Edit Project
-    </a>
-    <form
-    action="{{ route('projects.destroy', $project) }}"
-    method="POST"
->
-    @csrf
-    @method('DELETE')
-
-    <button
-        type="submit"
-        onclick="return confirm('Delete this project?')"
+    <a
+        href="{{ route('projects.edit', $project) }}"
+        class="btn btn-warning"
     >
-        Delete Project
-    </button>
-</form>
-<h2>Issues</h2>
-@forelse($project->issues as $issue)
+        Edit
+    </a>
+</div>
 
-    <div>
-        <strong>{{ $issue->title }}</strong>
+<div class="card mb-3">
+    <div class="card-body">
 
-        <p>{{ $issue->status }}</p>
         <p>
- 
-</p>
+            {{ $project->description }}
+        </p>
+
+        <p>
+            <strong>Start Date:</strong>
+            {{ $project->start_date }}
+        </p>
+
+        <p>
+            <strong>Deadline:</strong>
+            {{ $project->deadline }}
+        </p>
+
+        <form
+            action="{{ route('projects.destroy', $project) }}"
+            method="POST"
+        >
+            @csrf
+            @method('DELETE')
+
+            <button
+                class="btn btn-danger"
+                onclick="return confirm('Delete this project?')"
+            >
+                Delete Project
+            </button>
+        </form>
+
     </div>
-   
-    <hr>
+</div>
 
-@empty
+<div class="card">
+    <div class="card-header">
+        Issues
+    </div>
 
-    <p>No issues found.</p>
+    <div class="card-body">
 
-@endforelse
+        @forelse($project->issues as $issue)
 
-</body>
-</html>
+            <h5>{{ $issue->title }}</h5>
+
+            <p>Status: {{ $issue->status }}</p>
+
+            <hr>
+
+        @empty
+
+            <p>No issues found.</p>
+
+        @endforelse
+
+    </div>
+</div>
+
+@endsection
