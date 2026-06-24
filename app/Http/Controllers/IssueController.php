@@ -16,11 +16,32 @@ class IssueController extends Controller
      */
     public function index()
     {
-        $issues = Issue::with('project')
+        $query = Issue::with(['project', 'tags']);
+    
+        if (request('status')) {
+            $query->where('status', request('status'));
+        }
+    
+        if (request('priority')) {
+            $query->where('priority', request('priority'));
+        }
+    
+        if (request('tag')) {
+            $query->whereHas('tags', function ($q) {
+                $q->where('tags.id', request('tag'));
+            });
+        }
+    
+        $issues = $query
             ->latest()
             ->get();
     
-        return view('issues.index', compact('issues'));
+        $tags = Tag::orderBy('name')->get();
+    
+        return view(
+            'issues.index',
+            compact('issues', 'tags')
+        );
     }
 
     /**
