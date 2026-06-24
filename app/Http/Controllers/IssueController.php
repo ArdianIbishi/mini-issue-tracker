@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Issue;
 use App\Http\Requests\StoreIssueRequest;
 use App\Http\Requests\UpdateIssueRequest;
+use App\Models\Project;
+
 
 class IssueController extends Controller
 {
@@ -13,7 +15,11 @@ class IssueController extends Controller
      */
     public function index()
     {
-        //
+        $issues = Issue::with('project')
+            ->latest()
+            ->get();
+    
+        return view('issues.index', compact('issues'));
     }
 
     /**
@@ -21,7 +27,10 @@ class IssueController extends Controller
      */
     public function create()
     {
-        //
+        $projects = Project::orderBy('name')
+            ->get();
+    
+        return view('issues.create', compact('projects'));
     }
 
     /**
@@ -29,7 +38,16 @@ class IssueController extends Controller
      */
     public function store(StoreIssueRequest $request)
     {
-        //
+        Issue::create(
+            $request->validated()
+        );
+    
+        return redirect()
+            ->route('issues.index')
+            ->with(
+                'success',
+                'Issue created successfully.'
+            );
     }
 
     /**
@@ -37,7 +55,9 @@ class IssueController extends Controller
      */
     public function show(Issue $issue)
     {
-        //
+        $issue->load('project');
+    
+        return view('issues.show', compact('issue'));
     }
 
     /**
@@ -45,22 +65,45 @@ class IssueController extends Controller
      */
     public function edit(Issue $issue)
     {
-        //
+        $projects = Project::orderBy('name')->get();
+    
+        return view(
+            'issues.edit',
+            compact('issue', 'projects')
+        );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateIssueRequest $request, Issue $issue)
+    public function update(
+        UpdateIssueRequest $request,
+        Issue $issue
+    )
     {
-        //
+        $issue->update(
+            $request->validated()
+        );
+    
+        return redirect()
+            ->route('issues.show', $issue)
+            ->with(
+                'success',
+                'Issue updated successfully.'
+            );
     }
-
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Issue $issue)
     {
-        //
+        $issue->delete();
+    
+        return redirect()
+            ->route('issues.index')
+            ->with(
+                'success',
+                'Issue deleted successfully.'
+            );
     }
 }
