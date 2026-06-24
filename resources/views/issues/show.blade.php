@@ -53,6 +53,71 @@
         <p>
             {{ $issue->description }}
         </p>
+        <hr>
+
+<h5>Tags</h5>
+
+<div class="mb-3">
+    @forelse($issue->tags as $tag)
+
+        <span
+            class="badge me-2"
+            style="background-color: {{ $tag->color ?? '#6c757d' }}"
+        >
+            {{ $tag->name }}
+        </span>
+
+        <form
+            action="{{ route('issues.tags.destroy', [$issue, $tag]) }}"
+            method="POST"
+            class="d-inline"
+        >
+            @csrf
+            @method('DELETE')
+
+            <button
+                class="btn btn-sm btn-outline-danger me-2"
+                onclick="return confirm('Remove this tag?')"
+            >
+                Remove
+            </button>
+        </form>
+
+    @empty
+
+        <p>No tags attached.</p>
+
+    @endforelse
+</div>
+
+<form
+    action="{{ route('issues.tags.store', $issue) }}"
+    method="POST"
+    class="row g-2"
+>
+    @csrf
+
+    <div class="col-md-8">
+        <select
+            name="tag_id"
+            class="form-select"
+        >
+            @foreach($availableTags as $tag)
+
+                <option value="{{ $tag->id }}">
+                    {{ $tag->name }}
+                </option>
+
+            @endforeach
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <button class="btn btn-primary w-100">
+            Attach Tag
+        </button>
+    </div>
+</form>
 
     </div>
 

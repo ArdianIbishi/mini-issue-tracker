@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Issue;
+use App\Models\Project;
+use App\Models\Tag;
 use App\Http\Requests\StoreIssueRequest;
 use App\Http\Requests\UpdateIssueRequest;
-use App\Models\Project;
 
 
 class IssueController extends Controller
@@ -57,12 +58,22 @@ class IssueController extends Controller
     {
         $issue->load([
             'project',
+            'tags',
             'comments' => function ($query) {
                 $query->latest();
             }
         ]);
+
+        $availableTags = Tag::whereNotIn(
+            'id',
+            $issue->tags->pluck('id')
+        )->orderBy('name')->get();
     
-        return view('issues.show', compact('issue'));
+    
+        return view(
+            'issues.show',
+            compact('issue', 'availableTags')
+        );
     }
 
     /**
